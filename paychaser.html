@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PayChaser — Almond</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black: #080808;
+    --surface: #111111;
+    --surface2: #1a1a1a;
+    --border: rgba(255,255,255,0.07);
+    --border-bright: rgba(255,255,255,0.18);
+    --white: #ffffff;
+    --gray: #888;
+    --muted: #444;
+    --green: #22c55e;
+    --green-dim: rgba(34,197,94,0.12);
+    --font: 'Inter', sans-serif;
+    --mono: 'Inter', sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 62px;
+    background: rgba(8,8,8,0.88);
+    backdrop-filter: blur(20px) saturate(1.4);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-logo svg { height: 24px; width: auto; fill: var(--white); }
+  .nav-wordmark { font-size: 16px; font-weight: 700; color: var(--white); letter-spacing: -0.3px; }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    color: var(--gray); text-decoration: none; font-size: 13.5px; font-weight: 500;
+    letter-spacing: -0.1px; transition: color 0.15s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a.active { color: var(--white); }
+  .nav-cta {
+    background: var(--white); color: var(--black); border: none;
+    padding: 8px 20px; font-family: var(--font); font-size: 13px; font-weight: 700;
+    cursor: pointer; border-radius: 7px; text-decoration: none;
+    transition: opacity 0.15s, transform 0.15s; letter-spacing: -0.2px;
+  }
+  .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  /* ─── HERO ─── */
+  .hero-wrap {
+    position: relative;
+    overflow: hidden;
+    padding-top: 62px;
+  }
+  .hero-wrap::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+  .hero-wrap::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 40%, rgba(40,40,40,0.45) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    position: relative; z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 96px 48px 72px;
+    text-align: center;
+    animation: fadeUp 0.6s cubic-bezier(0.22,1,0.36,1) both;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--green-dim);
+    border: 1px solid rgba(34,197,94,0.28);
+    border-radius: 999px; padding: 5px 14px 5px 10px;
+    font-size: 12px; font-weight: 600; color: var(--green);
+    margin-bottom: 32px; text-decoration: none;
+    font-family: var(--mono); letter-spacing: -0.2px;
+  }
+  .badge-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+    animation: pulse 2.2s ease infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 0 0 3px rgba(34,197,94,0.2); }
+    50% { box-shadow: 0 0 0 6px rgba(34,197,94,0.06); }
+  }
+
+  .hero-title {
+    font-size: clamp(42px, 6vw, 80px);
+    font-weight: 800;
+    letter-spacing: -3px;
+    line-height: 1.02;
+    color: var(--white);
+    margin-bottom: 22px;
+  }
+  .hero-title .dim { color: #282828; }
+
+  .hero-sub {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.8;
+    max-width: 520px;
+    margin: 0 auto 40px;
+  }
+  .hero-sub strong { color: #888; font-weight: 600; }
+
+  .hero-actions {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: var(--white); color: var(--black); border: none;
+    padding: 13px 28px; font-family: var(--font); font-size: 14px; font-weight: 700;
+    cursor: pointer; border-radius: 8px; text-decoration: none;
+    transition: opacity 0.15s, transform 0.2s; letter-spacing: -0.3px;
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-2px); }
+  .btn-ghost {
+    background: transparent; color: #888; border: 1px solid rgba(255,255,255,0.12);
+    padding: 13px 28px; font-family: var(--font); font-size: 14px; font-weight: 600;
+    cursor: pointer; border-radius: 8px; text-decoration: none;
+    transition: all 0.2s; letter-spacing: -0.3px;
+  }
+  .btn-ghost:hover { color: var(--white); border-color: rgba(255,255,255,0.3); transform: translateY(-2px); }
+
+  /* ─── DASHBOARD PLACEHOLDER ─── */
+  .dashboard-wrap {
+    position: relative; z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 48px 0;
+    animation: fadeUp 0.6s 0.15s cubic-bezier(0.22,1,0.36,1) both;
+    opacity: 0;
+  }
+
+  .dashboard-tilt {
+    transform-style: preserve-3d;
+    transition: transform 0.08s linear;
+    will-change: transform;
+    cursor: default;
+  }
+
+  .dashboard-card {
+    background: #0c0c0c;
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.03),
+      0 40px 100px rgba(0,0,0,0.8),
+      0 12px 32px rgba(0,0,0,0.5);
+  }
+
+  /* Window chrome */
+  .dash-bar {
+    background: #090909;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding: 14px 18px;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .win-btn { width: 11px; height: 11px; border-radius: 50%; }
+  .win-close { background: #ff5f57; }
+  .win-min   { background: #febc2e; }
+  .win-max   { background: #28c840; }
+  .win-title {
+    flex: 1; text-align: center;
+    font-size: 12px; font-weight: 600; color: #333;
+    font-family: var(--mono); margin-left: -55px;
+  }
+
+  /* Dashboard body */
+  .dash-body {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    min-height: 420px;
+  }
+
+  /* Sidebar */
+  .dash-sidebar {
+    background: #0a0a0a;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    padding: 20px 0;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .sidebar-section {
+    font-size: 9px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: #222;
+    padding: 14px 18px 6px;
+    font-family: var(--mono);
+  }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 18px;
+    font-size: 12px; font-weight: 500; color: #333;
+    cursor: pointer; border-radius: 0;
+    transition: background 0.15s, color 0.15s;
+  }
+  .sidebar-item:hover { background: rgba(255,255,255,0.03); color: #666; }
+  .sidebar-item.active { background: rgba(255,255,255,0.04); color: #aaa; }
+  .sidebar-icon { font-size: 13px; width: 16px; text-align: center; }
+
+  /* Main content */
+  .dash-main { padding: 28px; display: flex; flex-direction: column; gap: 20px; }
+
+  .dash-row { display: flex; align-items: center; justify-content: space-between; }
+  .dash-heading { font-size: 15px; font-weight: 700; color: #ccc; letter-spacing: -0.5px; }
+  .dash-sub { font-size: 11px; color: #2a2a2a; font-family: var(--mono); }
+
+  /* Stats */
+  .dash-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+  .dash-stat {
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.055);
+    border-radius: 10px; padding: 16px 14px;
+  }
+  .dash-stat.green { border-color: rgba(34,197,94,0.2); background: rgba(34,197,94,0.04); }
+  .stat-label { font-size: 9.5px; color: #2e2e2e; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; font-family: var(--mono); margin-bottom: 8px; }
+  .stat-val { font-size: 26px; font-weight: 800; letter-spacing: -1.2px; color: var(--white); line-height: 1; }
+  .stat-val.green { color: var(--green); }
+  .stat-change { font-size: 10px; color: #2a2a2a; margin-top: 5px; }
+  .stat-change.up { color: rgba(34,197,94,0.6); }
+
+  /* Graph placeholder */
+  .dash-graph {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 10px;
+    padding: 18px;
+    flex: 1;
+  }
+  .graph-label { font-size: 10px; color: #2a2a2a; font-family: var(--mono); margin-bottom: 14px; letter-spacing: 1px; text-transform: uppercase; }
+  .graph-bars {
+    display: flex; align-items: flex-end; gap: 6px;
+    height: 80px;
+  }
+  .bar {
+    flex: 1; border-radius: 3px 3px 0 0;
+    background: rgba(255,255,255,0.06);
+    transition: background 0.2s;
+  }
+  .bar.highlight { background: rgba(34,197,94,0.4); }
+  .bar:hover { background: rgba(255,255,255,0.12); }
+
+  /* Invoice list */
+  .dash-invoices { display: flex; flex-direction: column; gap: 6px; }
+  .dash-invoice {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 7px; padding: 10px 14px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .inv-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .inv-dot.paid { background: var(--green); }
+  .inv-dot.due  { background: #f59e0b; }
+  .inv-dot.late { background: #ef4444; }
+  .inv-name-col { flex: 1; font-size: 11.5px; font-weight: 600; color: #555; }
+  .inv-amount-col { font-size: 11.5px; font-weight: 700; color: #444; font-family: var(--mono); }
+  .inv-badge {
+    font-size: 9.5px; font-weight: 700; padding: 2px 8px;
+    border-radius: 999px; font-family: var(--mono);
+  }
+  .badge-paid { background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+  .badge-due  { background: rgba(245,158,11,0.1); color: #f59e0b; border: 1px solid rgba(245,158,11,0.2); }
+  .badge-late { background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+
+  /* Dashboard bottom fade */
+  .dashboard-fade {
+    position: relative; z-index: 1;
+    height: 120px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 48px;
+    background: linear-gradient(to bottom, transparent, var(--black));
+    margin-top: -120px;
+    pointer-events: none;
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider { width: 100%; height: 1px; background: rgba(255,255,255,0.055); }
+
+  /* ─── HOW IT WORKS ─── */
+  .how-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 100px 48px 120px;
+  }
+
+  .how-header {
+    text-align: center;
+    margin-bottom: 72px;
+    animation: fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .how-eyebrow {
+    font-size: 11.5px; font-weight: 600; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 14px; font-family: var(--mono);
+  }
+  .how-title {
+    font-size: clamp(30px, 3.5vw, 48px);
+    font-weight: 800; letter-spacing: -2px; line-height: 1.05;
+    color: var(--white);
+  }
+  .how-title .dim { color: #222; }
+
+  /* Step progress bar */
+  .step-progress {
+    display: flex; align-items: center;
+    gap: 0;
+    margin-bottom: 56px;
+    position: relative;
+  }
+  .step-track {
+    flex: 1; height: 1px;
+    background: rgba(255,255,255,0.07);
+    position: relative;
+  }
+  .step-track-fill {
+    position: absolute; top: 0; left: 0; height: 100%;
+    background: var(--green);
+    transition: width 0.5s cubic-bezier(0.22,1,0.36,1);
+  }
+  .step-pip {
+    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; font-family: var(--mono);
+    border: 1px solid rgba(255,255,255,0.1);
+    background: var(--black);
+    color: #333;
+    transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
+    cursor: pointer;
+    position: relative; z-index: 1;
+  }
+  .step-pip.done {
+    background: rgba(34,197,94,0.15);
+    border-color: rgba(34,197,94,0.4);
+    color: var(--green);
+  }
+  .step-pip.active {
+    background: var(--green);
+    border-color: var(--green);
+    color: var(--black);
+    box-shadow: 0 0 0 4px rgba(34,197,94,0.15);
+  }
+
+  /* Step content */
+  .step-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+    min-height: 340px;
+  }
+
+  .step-left { position: relative; }
+
+  .step-number {
+    font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--green);
+    font-family: var(--mono); margin-bottom: 16px;
+    opacity: 0; transform: translateY(12px);
+    transition: all 0.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  .step-heading {
+    font-size: clamp(26px, 3vw, 38px);
+    font-weight: 800; letter-spacing: -1.5px;
+    line-height: 1.08; color: var(--white);
+    margin-bottom: 16px;
+    opacity: 0; transform: translateY(14px);
+    transition: all 0.4s 0.04s cubic-bezier(0.22,1,0.36,1);
+  }
+  .step-body {
+    font-size: 14.5px; color: #555; line-height: 1.8;
+    opacity: 0; transform: translateY(14px);
+    transition: all 0.4s 0.08s cubic-bezier(0.22,1,0.36,1);
+  }
+  .step-body strong { color: #888; font-weight: 600; }
+
+  .step-left.visible .step-number,
+  .step-left.visible .step-heading,
+  .step-left.visible .step-body {
+    opacity: 1; transform: translateY(0);
+  }
+
+  /* Step visual panel */
+  .step-visual {
+    background: #0c0c0c;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    overflow: hidden;
+    min-height: 300px;
+    display: flex; flex-direction: column;
+    opacity: 0; transform: translateX(20px);
+    transition: all 0.45s 0.1s cubic-bezier(0.22,1,0.36,1);
+  }
+  .step-visual.visible { opacity: 1; transform: translateX(0); }
+
+  .vis-bar {
+    background: #090909;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .vis-dot { width: 9px; height: 9px; border-radius: 50%; }
+  .vis-dot-r { background: #ff5f57; }
+  .vis-dot-y { background: #febc2e; }
+  .vis-dot-g { background: #28c840; }
+  .vis-label {
+    flex: 1; text-align: center;
+    font-size: 11px; font-weight: 600; color: #2a2a2a;
+    font-family: var(--mono); margin-left: -50px;
+  }
+
+  .vis-body { padding: 22px; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+
+  /* Vis panels per step */
+  .vis-row { display: flex; gap: 10px; }
+  .vis-block {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.055);
+    border-radius: 8px; padding: 14px;
+    flex: 1;
+  }
+  .vis-block-label { font-size: 9px; color: #222; font-family: var(--mono); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .vis-block-val { font-size: 20px; font-weight: 800; letter-spacing: -0.8px; color: var(--white); }
+  .vis-block-val.green { color: var(--green); }
+  .vis-block-sub { font-size: 9.5px; color: #2a2a2a; margin-top: 4px; }
+
+  .vis-notif {
+    background: rgba(34,197,94,0.06);
+    border: 1px solid rgba(34,197,94,0.15);
+    border-radius: 8px; padding: 12px 14px;
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .vis-notif-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+  .vis-notif-text { font-size: 11px; color: rgba(74,222,128,0.8); line-height: 1.5; }
+  .vis-notif-time { font-size: 9.5px; color: rgba(74,222,128,0.3); font-family: var(--mono); margin-top: 3px; }
+
+  .vis-list { display: flex; flex-direction: column; gap: 7px; }
+  .vis-item {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 7px; padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .vis-item-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .vis-item-name { flex: 1; font-size: 11px; font-weight: 600; color: #444; }
+  .vis-item-tag {
+    font-size: 9px; font-weight: 700; padding: 2px 7px;
+    border-radius: 999px; font-family: var(--mono);
+  }
+  .vis-item-amt { font-size: 11px; font-weight: 700; color: #383838; font-family: var(--mono); }
+
+  .vis-timeline { display: flex; flex-direction: column; gap: 0; }
+  .vis-tl-item {
+    display: flex; gap: 14px; padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    align-items: flex-start;
+  }
+  .vis-tl-item:last-child { border-bottom: none; }
+  .vis-tl-left { display: flex; flex-direction: column; align-items: center; gap: 0; flex-shrink: 0; width: 32px; }
+  .vis-tl-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 4px; }
+  .vis-tl-line { width: 1px; flex: 1; background: rgba(255,255,255,0.06); margin-top: 4px; min-height: 18px; }
+  .vis-tl-body { flex: 1; }
+  .vis-tl-title { font-size: 11px; font-weight: 600; color: #555; }
+  .vis-tl-sub { font-size: 10px; color: #2a2a2a; font-family: var(--mono); margin-top: 2px; }
+
+  .vis-celebrate {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    flex: 1; gap: 12px; padding: 20px;
+  }
+  .vis-celebrate-icon { font-size: 40px; }
+  .vis-celebrate-title { font-size: 16px; font-weight: 800; letter-spacing: -0.5px; color: var(--white); }
+  .vis-celebrate-sub { font-size: 12px; color: #444; text-align: center; line-height: 1.6; }
+  .vis-celebrate-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--green-dim); border: 1px solid rgba(34,197,94,0.25);
+    border-radius: 999px; padding: 4px 12px;
+    font-size: 11px; font-weight: 600; color: var(--green);
+    font-family: var(--mono);
+  }
+
+  /* Nav buttons */
+  .step-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .step-nav-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 22px;
+    font-family: var(--font); font-size: 13px; font-weight: 600;
+    border-radius: 8px; cursor: pointer; text-decoration: none;
+    transition: all 0.2s; letter-spacing: -0.2px;
+  }
+  .btn-prev {
+    background: transparent; color: #555;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .btn-prev:hover { color: var(--white); border-color: rgba(255,255,255,0.2); }
+  .btn-prev:disabled { opacity: 0.2; cursor: default; pointer-events: none; }
+  .btn-next {
+    background: var(--white); color: var(--black);
+    border: 1px solid transparent;
+  }
+  .btn-next:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-next.finished {
+    background: var(--green); color: var(--black);
+  }
+
+  .step-counter {
+    font-size: 12px; color: #333; font-family: var(--mono);
+  }
+  .step-counter span { color: #666; }
+
+  /* ─── CTA STRIP ─── */
+  .cta-strip {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: #0a0a0a;
+    padding: 72px 48px;
+    text-align: center;
+  }
+  .cta-title {
+    font-size: clamp(28px, 3.5vw, 46px);
+    font-weight: 800; letter-spacing: -2px;
+    color: var(--white); margin-bottom: 16px;
+  }
+  .cta-sub { font-size: 15px; color: #444; margin-bottom: 36px; }
+  .cta-actions { display: flex; gap: 12px; justify-content: center; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 1px solid var(--border); padding: 32px 48px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+  }
+  .footer-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .footer-logo svg { height: 18px; width: auto; fill: var(--muted); }
+  .footer-wordmark { font-size: 14px; font-weight: 700; color: var(--muted); }
+  .footer-copy { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+  .footer-links { display: flex; gap: 20px; list-style: none; }
+  .footer-links a { font-size: 12px; color: var(--muted); text-decoration: none; transition: color 0.15s; }
+  .footer-links a:hover { color: var(--white); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 24px; }
+    .nav-links { display: none; }
+    .hero-inner { padding: 80px 24px 56px; }
+    .dashboard-wrap, .dashboard-fade { padding: 0 24px; }
+    .how-section { padding: 72px 24px 80px; }
+    .step-content { grid-template-columns: 1fr; gap: 32px; }
+    .step-visual { order: -1; }
+    footer { padding: 28px 24px; flex-direction: column; }
+    .cta-strip { padding: 56px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <svg viewBox="0 0 214 410" xmlns="http://www.w3.org/2000/svg">
+      <path d="M.95,217.78c2.4,18.11,9.13,33.98,19.75,46.86.13-6.65.66-13.44,1.61-20.36,7.4-53.46,38.56-106.25,85.49-144.84,27.01-22.2,55.67-38.66,83.49-49.08-40.13-22.13-108,3.65-155,60.07C9.13,143.06-3.76,182.19.95,217.78Z"/>
+      <path d="M109.47,294c34.95-7.73,67.2-33.26,88.48-70.03,31.29-54.09,36.64-114.84,16.34-150.41-3.1,19.29-9.45,38.76-18.95,57.49-16.8,33.11-39.36,60.41-63.61,79.41-2.92,2.29-6.27-2.77-3.55-5.35,20.58-19.54,39.51-44.84,54.33-74.32,10.74-21.37,17.81-43.51,21.1-65.29-10.25,12.43-21.31,23.27-32.75,32.23-2.9,2.27-6.23-2.75-3.52-5.31,10.32-9.8,20.22-21.07,29.38-33.58-25.4,11.43-51.22,27.45-75.81,47.81-51.6,42.74-85.71,100.34-93.6,158.04-.29,2.13-.54,4.24-.76,6.34,3.49,3.45,7.3,6.64,11.43,9.54,20.72,14.55,45.44,19.18,71.49,13.43Z"/>
+    </svg>
+    <span class="nav-wordmark">Almond</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="systems.html">Systems</a></li>
+    <li><a href="paychaser.html" class="active">PayChaser</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <a href="#" class="nav-cta">Get in Touch</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero-wrap">
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Live Now
+    </div>
+    <h1 class="hero-title">Chase money.<br><span class="dim">Not clients.</span></h1>
+    <p class="hero-sub">
+      PayChaser sends your overdue invoice reminders automatically.
+      <strong>Friendly at first. Firm when needed.</strong>
+      You focus on the work — we chase the money.
+    </p>
+    <div class="hero-actions">
+      <a href="https://app.paychaser.com" class="btn-primary">Get Started →</a>
+      <a href="#how" class="btn-ghost">See How It Works</a>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD PLACEHOLDER -->
+<div class="dashboard-wrap">
+  <div class="dashboard-tilt" id="dashTilt">
+    <div class="dashboard-card">
+
+      <div class="dash-bar">
+        <div class="win-btn win-close"></div>
+        <div class="win-btn win-min"></div>
+        <div class="win-btn win-max"></div>
+        <div class="win-title">PayChaser — Dashboard</div>
+      </div>
+
+      <div class="dash-body">
+        <!-- Sidebar -->
+        <div class="dash-sidebar">
+          <div class="sidebar-section">Overview</div>
+          <div class="sidebar-item active"><span class="sidebar-icon">◈</span> Dashboard</div>
+          <div class="sidebar-item"><span class="sidebar-icon">📄</span> Invoices</div>
+          <div class="sidebar-item"><span class="sidebar-icon">🔔</span> Reminders</div>
+          <div class="sidebar-item"><span class="sidebar-icon">👥</span> Clients</div>
+          <div class="sidebar-section">Reports</div>
+          <div class="sidebar-item"><span class="sidebar-icon">📊</span> Analytics</div>
+          <div class="sidebar-item"><span class="sidebar-icon">💳</span> Payments</div>
+          <div class="sidebar-section">Settings</div>
+          <div class="sidebar-item"><span class="sidebar-icon">⚙️</span> Settings</div>
+        </div>
+
+        <!-- Main -->
+        <div class="dash-main">
+          <div class="dash-row">
+            <div class="dash-heading">November Overview</div>
+            <div class="dash-sub">Last updated just now</div>
+          </div>
+
+          <div class="dash-stats">
+            <div class="dash-stat green">
+              <div class="stat-label">Collected</div>
+              <div class="stat-val green">$124k</div>
+              <div class="stat-change up">↑ 18% vs last month</div>
+            </div>
+            <div class="dash-stat">
+              <div class="stat-label">Outstanding</div>
+              <div class="stat-val">$48k</div>
+              <div class="stat-change">12 invoices pending</div>
+            </div>
+            <div class="dash-stat">
+              <div class="stat-label">Overdue</div>
+              <div class="stat-val">$9.8k</div>
+              <div class="stat-change">3 clients flagged</div>
+            </div>
+          </div>
+
+          <div class="dash-graph">
+            <div class="graph-label">Collections — Last 8 months</div>
+            <div class="graph-bars">
+              <div class="bar" style="height:38%"></div>
+              <div class="bar" style="height:52%"></div>
+              <div class="bar" style="height:44%"></div>
+              <div class="bar" style="height:68%"></div>
+              <div class="bar" style="height:55%"></div>
+              <div class="bar" style="height:72%"></div>
+              <div class="bar" style="height:83%"></div>
+              <div class="bar highlight" style="height:100%"></div>
+            </div>
+          </div>
+
+          <div class="dash-invoices">
+            <div class="dash-invoice">
+              <div class="inv-dot paid"></div>
+              <div class="inv-name-col">Jarred Brown</div>
+              <div class="inv-badge badge-paid">Paid</div>
+              <div class="inv-amount-col">$6,400</div>
+            </div>
+            <div class="dash-invoice">
+              <div class="inv-dot late"></div>
+              <div class="inv-name-col">Stacey Smith</div>
+              <div class="inv-badge badge-late">Overdue</div>
+              <div class="inv-amount-col">$1,900</div>
+            </div>
+            <div class="dash-invoice">
+              <div class="inv-dot due"></div>
+              <div class="inv-name-col">Jarred Brown.</div>
+              <div class="inv-badge badge-due">1st Reminder sent</div>
+              <div class="inv-amount-col">$1,100</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="dashboard-fade"></div>
+
+<div class="divider"></div>
+
+<!-- HOW IT WORKS -->
+<div class="how-section" id="how">
+
+  <div class="how-header">
+    <p class="how-eyebrow">How It Works</p>
+    <h2 class="how-title">Up and running <span class="dim">in minutes.</span></h2>
+  </div>
+
+  <!-- Progress pips -->
+  <div class="step-progress" id="stepProgress">
+    <div class="step-pip active" data-step="0" onclick="goToStep(0)">1</div>
+    <div class="step-track"><div class="step-track-fill" id="track01" style="width:0%"></div></div>
+    <div class="step-pip" data-step="1" onclick="goToStep(1)">2</div>
+    <div class="step-track"><div class="step-track-fill" id="track12" style="width:0%"></div></div>
+    <div class="step-pip" data-step="2" onclick="goToStep(2)">3</div>
+    <div class="step-track"><div class="step-track-fill" id="track23" style="width:0%"></div></div>
+    <div class="step-pip" data-step="3" onclick="goToStep(3)">4</div>
+  </div>
+
+  <!-- Step content -->
+  <div class="step-content" id="stepContent">
+
+    <!-- LEFT: text -->
+    <div class="step-left" id="stepLeft">
+      <div class="step-number" id="stepNum">Step 01 — Connect</div>
+      <div class="step-heading" id="stepHeading">Add your invoices in seconds.</div>
+      <div class="step-body" id="stepBody">
+        Connect your existing tools or add invoices manually. PayChaser works with your workflow — not against it. <strong>No complex setup, no training required.</strong> Just drop in your invoices and you're live.
+      </div>
+    </div>
+
+    <!-- RIGHT: visual -->
+    <div class="step-visual" id="stepVisual">
+      <div class="vis-bar">
+        <div class="vis-dot vis-dot-r"></div>
+        <div class="vis-dot vis-dot-y"></div>
+        <div class="vis-dot vis-dot-g"></div>
+        <div class="vis-label" id="visLabel">Invoice Import</div>
+      </div>
+      <div class="vis-body" id="visBody">
+        <div class="vis-row">
+          <div class="vis-block">
+            <div class="vis-block-label">Invoices Added</div>
+            <div class="vis-block-val green">14</div>
+            <div class="vis-block-sub">Ready to track</div>
+          </div>
+          <div class="vis-block">
+            <div class="vis-block-label">Total Value</div>
+            <div class="vis-block-val">$82k</div>
+            <div class="vis-block-sub">Across 6 clients</div>
+          </div>
+        </div>
+        <div class="vis-list">
+          <div class="vis-item">
+            <div class="vis-item-dot" style="background:#22c55e"></div>
+            <div class="vis-item-name">Jeremy White · INV-0051</div>
+            <div class="vis-item-tag badge-paid">Imported</div>
+            <div class="vis-item-amt">$2,250</div>
+          </div>
+          <div class="vis-item">
+            <div class="vis-item-dot" style="background:#22c55e"></div>
+            <div class="vis-item-name">Daniel Zelensky · INV-0047</div>
+            <div class="vis-item-tag badge-paid">Imported</div>
+            <div class="vis-item-amt">$1,200</div>
+          </div>
+          <div class="vis-item">
+            <div class="vis-item-dot" style="background:#22c55e"></div>
+            <div class="vis-item-name">Jim Tucker · INV-0052</div>
+            <div class="vis-item-tag badge-paid">Imported</div>
+            <div class="vis-item-amt">$220</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Nav -->
+  <div class="step-nav">
+    <button class="step-nav-btn btn-prev" id="btnPrev" disabled onclick="prevStep()">← Previous</button>
+    <span class="step-counter">Step <span id="counterCur">1</span> of <span>4</span></span>
+    <button class="step-nav-btn btn-next" id="btnNext" onclick="nextStep()">Next →</button>
+  </div>
+
+</div>
+
+<!-- CTA -->
+<div class="cta-strip">
+  <h2 class="cta-title">Ready to get stop worrying?</h2>
+  <p class="cta-sub">Join businesses already using PayChaser to collect what they're owed.</p>
+  <div class="cta-actions">
+    <a href="#" class="btn-primary">Get Started Free →</a>
+    <a href="systems.html" class="btn-ghost">Back to Systems</a>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<footer>
+  <a href="index.html" class="footer-logo">
+    <svg viewBox="0 0 214 410" xmlns="http://www.w3.org/2000/svg">
+      <path d="M.95,217.78c2.4,18.11,9.13,33.98,19.75,46.86.13-6.65.66-13.44,1.61-20.36,7.4-53.46,38.56-106.25,85.49-144.84,27.01-22.2,55.67-38.66,83.49-49.08-40.13-22.13-108,3.65-155,60.07C9.13,143.06-3.76,182.19.95,217.78Z"/>
+      <path d="M109.47,294c34.95-7.73,67.2-33.26,88.48-70.03,31.29-54.09,36.64-114.84,16.34-150.41-3.1,19.29-9.45,38.76-18.95,57.49-16.8,33.11-39.36,60.41-63.61,79.41-2.92,2.29-6.27-2.77-3.55-5.35,20.58-19.54,39.51-44.84,54.33-74.32,10.74-21.37,17.81-43.51,21.1-65.29-10.25,12.43-21.31,23.27-32.75,32.23-2.9,2.27-6.23-2.75-3.52-5.31,10.32-9.8,20.22-21.07,29.38-33.58-25.4,11.43-51.22,27.45-75.81,47.81-51.6,42.74-85.71,100.34-93.6,158.04-.29,2.13-.54,4.24-.76,6.34,3.49,3.45,7.3,6.64,11.43,9.54,20.72,14.55,45.44,19.18,71.49,13.43Z"/>
+    </svg>
+    <span class="footer-wordmark">Almond</span>
+  </a>
+  <span class="footer-copy">© 2026 Almond. All rights reserved.</span>
+  <ul class="footer-links">
+    <li><a href="#">Privacy</a></li>
+    <li><a href="#">Terms</a></li>
+    <li><a href="systems.html">Systems</a></li>
+    <li><a href="paychaser.html">PayChaser</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</footer>
+
+<script>
+  /* ─── DASHBOARD TILT ─── */
+  const dashTilt = document.getElementById('dashTilt');
+  let dtx = 0, dty = 0, dcx = 0, dcy = 0;
+  dashTilt.addEventListener('mousemove', e => {
+    const r = dashTilt.getBoundingClientRect();
+    dtx = ((e.clientX - r.left) / r.width - 0.5) * 2;
+    dty = ((e.clientY - r.top)  / r.height - 0.5) * 2;
+  });
+  dashTilt.addEventListener('mouseleave', () => { dtx = 0; dty = 0; });
+  (function tiltLoop() {
+    dcx += (dty * -5 - dcx) * 0.1;
+    dcy += (dtx *  5 - dcy) * 0.1;
+    dashTilt.style.transform = `perspective(900px) rotateX(${dcx.toFixed(3)}deg) rotateY(${dcy.toFixed(3)}deg)`;
+    requestAnimationFrame(tiltLoop);
+  })();
+
+  /* ─── STEP DATA ─── */
+  const steps = [
+    {
+      num: 'Step 01 — Connect',
+      heading: 'Add your invoices in seconds.',
+      body: 'Connect your existing tools or add invoices manually. PayChaser works with your workflow — not against it. <strong>No complex setup, no training required.</strong> Just drop in your invoices and you\'re live.',
+      visLabel: 'Invoice Import',
+      visHTML: `
+        <div class="vis-row">
+          <div class="vis-block">
+            <div class="vis-block-label">Invoices Added</div>
+            <div class="vis-block-val green">14</div>
+            <div class="vis-block-sub">Ready to track</div>
+          </div>
+          <div class="vis-block">
+            <div class="vis-block-label">Total Value</div>
+            <div class="vis-block-val">$82k</div>
+            <div class="vis-block-sub">Across 6 clients</div>
+          </div>
+        </div>
+        <div class="vis-list">
+          <div class="vis-item"><div class="vis-item-dot" style="background:#22c55e"></div><div class="vis-item-name">Buildco Systems · INV-0051</div><div class="vis-item-tag badge-paid">Imported</div><div class="vis-item-amt">$6,400</div></div>
+          <div class="vis-item"><div class="vis-item-dot" style="background:#22c55e"></div><div class="vis-item-name">Apex Design Co. · INV-0047</div><div class="vis-item-tag badge-paid">Imported</div><div class="vis-item-amt">$3,200</div></div>
+          <div class="vis-item"><div class="vis-item-dot" style="background:#22c55e"></div><div class="vis-item-name">NovaTech Ltd. · INV-0052</div><div class="vis-item-tag badge-paid">Imported</div><div class="vis-item-amt">$11,750</div></div>
+        </div>`
+    },
+    {
+      num: 'Step 02 — Automate',
+      heading: 'Set your reminder rules. Once.',
+      body: 'Tell PayChaser how you want to chase — friendly nudge on day 3, firmer tone on day 7, final notice on day 14. <strong>It handles the timing, the wording, and the sending.</strong> You never have to think about it again.',
+      visLabel: 'Reminder Schedule',
+      visHTML: `
+        <div class="vis-notif">
+          <div class="vis-notif-icon">⚡</div>
+          <div><div class="vis-notif-text">Automation active — 3 rules running across 12 invoices</div><div class="vis-notif-time">Updated now</div></div>
+        </div>
+        <div class="vis-timeline">
+          <div class="vis-tl-item">
+            <div class="vis-tl-left"><div class="vis-tl-dot" style="background:#22c55e"></div><div class="vis-tl-line"></div></div>
+            <div class="vis-tl-body"><div class="vis-tl-title">Day 3 — Friendly nudge</div><div class="vis-tl-sub">Warm reminder, assumes oversight</div></div>
+          </div>
+          <div class="vis-tl-item">
+            <div class="vis-tl-left"><div class="vis-tl-dot" style="background:#f59e0b"></div><div class="vis-tl-line"></div></div>
+            <div class="vis-tl-body"><div class="vis-tl-title">Day 7 — Firmer tone</div><div class="vis-tl-sub">Direct, professional, no fluff</div></div>
+          </div>
+          <div class="vis-tl-item">
+            <div class="vis-tl-left"><div class="vis-tl-dot" style="background:#ef4444"></div></div>
+            <div class="vis-tl-body"><div class="vis-tl-title">Day 14 — Final notice</div><div class="vis-tl-sub">Last chance before escalation</div></div>
+          </div>
+        </div>`
+    },
+    {
+      num: 'Step 03 — Track',
+      heading: 'Know exactly where every invoice stands.',
+      body: 'Your dashboard shows every invoice, every reminder sent, and every payment received — in real time. <strong>No more chasing spreadsheets.</strong> Just a clear, honest view of what\'s paid and what\'s not.',
+      visLabel: 'Live Dashboard',
+      visHTML: `
+        <div class="vis-row">
+          <div class="vis-block">
+            <div class="vis-block-label">Collected</div>
+            <div class="vis-block-val green">$124k</div>
+            <div class="vis-block-sub">↑ 18% this month</div>
+          </div>
+          <div class="vis-block">
+            <div class="vis-block-label">Overdue</div>
+            <div class="vis-block-val">$9.8k</div>
+            <div class="vis-block-sub">Being chased now</div>
+          </div>
+        </div>
+        <div class="vis-list">
+          <div class="vis-item"><div class="vis-item-dot" style="background:#22c55e"></div><div class="vis-item-name">Buildco Systems</div><div class="vis-item-tag badge-paid">Paid</div><div class="vis-item-amt">$6,400</div></div>
+          <div class="vis-item"><div class="vis-item-dot" style="background:#ef4444"></div><div class="vis-item-name">Apex Design Co.</div><div class="vis-item-tag badge-late">Overdue · Day 7</div><div class="vis-item-amt">$3,200</div></div>
+          <div class="vis-item"><div class="vis-item-dot" style="background:#f59e0b"></div><div class="vis-item-name">NovaTech Ltd.</div><div class="vis-item-tag badge-due">Reminder sent</div><div class="vis-item-amt">$11,750</div></div>
+        </div>`
+    },
+    {
+      num: 'Step 04 — Collect',
+      heading: 'Get paid. Move on.',
+      body: 'When a client pays, PayChaser marks it done and stops all reminders automatically. <strong>No double-checking, No Worry.</strong> Automated End to End so you can stop worrying about receiving money and get back to work.',
+      visLabel: 'Payment Received',
+      visHTML: `
+        <div class="vis-celebrate">
+          <div class="vis-celebrate-icon">🎉</div>
+          <div class="vis-celebrate-title">Michael Williams. just paid</div>
+          <div class="vis-celebrate-sub">$1,750 received · Reminders stopped automatically</div>
+          <div class="vis-celebrate-badge"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block"></span> All reminders cancelled</div>
+        </div>
+        <div class="vis-row">
+          <div class="vis-block">
+            <div class="vis-block-label">Collected Today</div>
+            <div class="vis-block-val green">$1,750</div>
+            <div class="vis-block-sub">1 invoice closed</div>
+          </div>
+          <div class="vis-block">
+            <div class="vis-block-label">Collection Rate</div>
+            <div class="vis-block-val">98%</div>
+            <div class="vis-block-sub">All time average</div>
+          </div>
+        </div>`
+    }
+  ];
+
+  let current = 0;
+
+  function goToStep(n) {
+    current = n;
+    renderStep();
+  }
+
+  function nextStep() {
+    if (current < steps.length - 1) { current++; renderStep(); }
+  }
+  function prevStep() {
+    if (current > 0) { current--; renderStep(); }
+  }
+
+  function renderStep() {
+    const s = steps[current];
+    const left = document.getElementById('stepLeft');
+    const visual = document.getElementById('stepVisual');
+
+    // Fade out
+    left.classList.remove('visible');
+    visual.classList.remove('visible');
+
+    setTimeout(() => {
+      // Update text
+      document.getElementById('stepNum').textContent = s.num;
+      document.getElementById('stepHeading').textContent = s.heading;
+      document.getElementById('stepBody').innerHTML = s.body;
+      document.getElementById('visLabel').textContent = s.visLabel;
+      document.getElementById('visBody').innerHTML = s.visHTML;
+      document.getElementById('counterCur').textContent = current + 1;
+
+      // Update pips
+      document.querySelectorAll('.step-pip').forEach((pip, i) => {
+        pip.classList.remove('active', 'done');
+        if (i < current) pip.classList.add('done');
+        if (i === current) pip.classList.add('active');
+      });
+
+      // Update tracks
+      ['track01','track12','track23'].forEach((id, i) => {
+        document.getElementById(id).style.width = current > i ? '100%' : '0%';
+      });
+
+      // Update buttons
+      document.getElementById('btnPrev').disabled = current === 0;
+      const btnNext = document.getElementById('btnNext');
+      if (current === steps.length - 1) {
+        btnNext.textContent = 'Get Started →';
+        btnNext.classList.add('finished');
+        btnNext.onclick = () => { window.location.href = 'https://app.paychaser.com'; };
+      } else {
+        btnNext.textContent = 'Next →';
+        btnNext.classList.remove('finished');
+        btnNext.onclick = nextStep;
+      }
+
+      // Fade in
+      requestAnimationFrame(() => {
+        left.classList.add('visible');
+        visual.classList.add('visible');
+      });
+    }, 180);
+  }
+
+  // Init on load
+  window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('stepLeft').classList.add('visible');
+    document.getElementById('stepVisual').classList.add('visible');
+  });
+</script>
+</body>
+</html>
